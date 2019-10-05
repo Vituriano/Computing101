@@ -42,11 +42,13 @@ byte unico[8] = {
   B00001,
 };
 
-// include the library code:
+// inclui a biblioteca que controla a tela lcd
 #include <LiquidCrystal.h>
 
-// initialize the library with the numbers of the interface pins
+// inicializa a biblioteca com os números referentes aos pinos do arduino.
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+
 char matrix[128][2];
 
 void setup() {
