@@ -116,7 +116,7 @@ void l_callback(int l) {
 
 void r_callback(int r) {
   Serial.println("PUTONA HAPPYFACE");
-  carrinho = 1;
+  carrinho = 2;
 }
 
 void input() {
@@ -167,6 +167,14 @@ void clear_screen() {
   }
 }
 
+int checar_perda() {
+  if(matrix[offset%128][carrinho] != vazio) {
+    return 1;
+  }
+
+  return 0;
+}
+
 void loop() {
   lcd.setCursor(0, 1);
 
@@ -177,6 +185,8 @@ void loop() {
   //Serial.println(digitalRead(BRIGHT));
   //lcd.print("PUTONA happy face");
   clear_screen();
+  
+
   print(0,carrinho, UNICO);
 
   for (int i = 0; i < 16; i++) {
@@ -187,6 +197,12 @@ void loop() {
       print(i, j, matrix[(i + offset) % 128][j]);
       
     }
+  }
+
+  if(checar_perda() == 1) {
+    lcd.setCursor(0,0);
+    lcd.print("SE FUDEU");
+    return;
   }
 
   //lcd.setCursor(0, carrinho);
