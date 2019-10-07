@@ -123,10 +123,6 @@ void input() {
   int l = digitalRead(BLEFT);
   int r = digitalRead(BRIGHT);
 
-  //Serial.print(l);
-  //Serial.print(", ");
-  //Serial.println(past_l);
-
   if (l != past_l) {
     if (l == HIGH) {
       l_callback(l);
@@ -179,11 +175,6 @@ void loop() {
   lcd.setCursor(0, 1);
 
   input();
-
-  //Serial.print(digitalRead(BLEFT));
-  //Serial.print(", ");
-  //Serial.println(digitalRead(BRIGHT));
-  //lcd.print("PUTONA happy face");
   clear_screen();
   
 
@@ -191,9 +182,6 @@ void loop() {
 
   for (int i = 0; i < 16; i++) {
     for (int j = 0; j < 2; j++) {
-      //lcd.setCursor(i, j);
-      //lcd.write(matrix[(i + offset) % 128][j]);
-
       print(i, j, matrix[(i + offset) % 128][j]);
       
     }
@@ -204,9 +192,6 @@ void loop() {
     lcd.print("SE FUDEU");
     return;
   }
-
-  //lcd.setCursor(0, carrinho);
-  //lcd.write(byte(UNICO));
 
   offset = millis() / 150;
 }
