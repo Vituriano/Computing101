@@ -4,6 +4,8 @@
 
 */
 
+#include <LiquidCrystal.h>
+
 #define FUNDO 0
 #define MEIO 1
 #define FRENTE 2
@@ -51,10 +53,9 @@ byte unico[8] = {
   B00001,
 };
 
-#include <LiquidCrystal.h>
-
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 char matrix[128][2];
+char vazio = ' ';
 
 void setup() {
 
@@ -64,13 +65,11 @@ void setup() {
 
   lcd.begin(16, 2);
   lcd.print("PUTONA HAPPYFACE");
-  char vazio = ' ';
   for (int i = 0; i < 128; i++) {
     for (int j = 0; j < 2; j++) {
       matrix[i][j] = vazio;
     }
   }
-
 
   for (int i = 5; i < 128; i++) {
     if (matrix[i][0] != vazio || matrix[i][1] != vazio ||
@@ -97,9 +96,6 @@ void setup() {
   lcd.createChar(FRENTE, frente);
   lcd.createChar(FUNDO, fundo);
   lcd.createChar(MEIO, meio);
-
-
-
 }
 
 int offset = 0;
@@ -111,9 +107,7 @@ void MoveLeft() {
 }
 
 int past_l = 0, past_r = 0;
-
 int carrinho=0;
-
 
 void l_callback(int l) {
   Serial.println("PUTONA HAPPYFACE2");
@@ -153,6 +147,26 @@ void input() {
 
 }
 
+void print_raw(int x, int y, char c) {
+  lcd.setCursor(x, y);
+  lcd.write(c);
+}
+
+void print(int x, int y, char c) {
+  if(c != vazio) {
+    print_raw(x,y,c);
+  }
+}
+
+
+void clear_screen() {
+  for (int i = 0; i < 16; i++) {
+    for (int j = 0; j < 2; j++) {
+      print_raw(i,j, vazio);
+    }
+  }
+}
+
 void loop() {
   lcd.setCursor(0, 1);
 
@@ -162,11 +176,21 @@ void loop() {
   //Serial.print(", ");
   //Serial.println(digitalRead(BRIGHT));
   //lcd.print("PUTONA happy face");
+  clear_screen();
+  print(0,carrinho, UNICO);
+
   for (int i = 0; i < 16; i++) {
     for (int j = 0; j < 2; j++) {
-      lcd.setCursor(i, j);
-      lcd.write(matrix[(i + offset) % 128][j]);
+      //lcd.setCursor(i, j);
+      //lcd.write(matrix[(i + offset) % 128][j]);
+
+      print(i, j, matrix[(i + offset) % 128][j]);
+      
     }
   }
+
+  //lcd.setCursor(0, carrinho);
+  //lcd.write(byte(UNICO));
+
   offset = millis() / 150;
 }
