@@ -10,7 +10,7 @@ key_dict = {"Left": "l", "Right":'r',
 
 # Nenhum desses valores valem nada. São só placeholders
 port = "/dev/ttyACM1"
-ard_serial = serial.Serial(port, 9600,timeout=5)
+ard_serial = serial.Serial(port, 9600)
 
 # Transformar a String da tecla em um comando entendivel pelo Arduino
 def EncodeKey(key):
