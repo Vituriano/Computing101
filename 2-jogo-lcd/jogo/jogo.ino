@@ -65,13 +65,14 @@ void setup() {
 
   lcd.begin(16, 2);
   lcd.print("PUTONA HAPPYFACE");
+  delay(2000);
   for (int i = 0; i < 128; i++) {
     for (int j = 0; j < 2; j++) {
       matrix[i][j] = vazio;
     }
   }
 
-  for (int i = 5; i < 128; i++) {
+  for (int i = 20; i < 128; i++) {
     if (matrix[i][0] != vazio || matrix[i][1] != vazio ||
         matrix[i - 1][0] != vazio || matrix[i - 1][1] != vazio ||
         matrix[i - 2][0] != vazio || matrix[i - 2][1] != vazio) {
@@ -107,21 +108,36 @@ void MoveLeft() {
 }
 
 int past_l = 0, past_r = 0;
-int carrinho=0;
+int carrinho = 0;
 
 void l_callback(int l) {
-  Serial.println("PUTONA HAPPYFACE2");
+  //Serial.println("PUTONA HAPPYFACE2");
   carrinho = 0;
 }
 
 void r_callback(int r) {
-  Serial.println("PUTONA HAPPYFACE");
-  carrinho = 2;
+  //Serial.println("PUTONA HAPPYFACE");
+  carrinho = 1;
 }
 
 void input() {
   int l = digitalRead(BLEFT);
   int r = digitalRead(BRIGHT);
+
+  String s = "";
+  if (Serial.available() > 0) {
+    s = Serial.readString();
+    Serial.println(s);
+  }
+
+  if(s == "l") {
+    l_callback(1);  
+  }
+
+  
+  if(s == "r") {
+    r_callback(1);  
+  }
 
   if (l != past_l) {
     if (l == HIGH) {
@@ -149,49 +165,59 @@ void print_raw(int x, int y, char c) {
 }
 
 void print(int x, int y, char c) {
-  if(c != vazio) {
-    print_raw(x,y,c);
-  }
+  //if(c != vazio) {
+  print_raw(x, y, c);
+  //}
 }
 
 
 void clear_screen() {
   for (int i = 0; i < 16; i++) {
     for (int j = 0; j < 2; j++) {
-      print_raw(i,j, vazio);
+      print_raw(i, j, vazio);
     }
   }
 }
 
 int checar_perda() {
-  if(matrix[offset%128][carrinho] != vazio) {
+  if (matrix[offset % 128][carrinho] != vazio) {
     return 1;
   }
 
   return 0;
 }
 
+int perdeu = 0;
+
 void loop() {
-  lcd.setCursor(0, 1);
+  if (!perdeu) {
+    lcd.setCursor(0, 1);
 
-  input();
-  clear_screen();
-  
+    input();
+    //clear_screen();
 
-  print(0,carrinho, UNICO);
+    print(0, carrinho, UNICO);
 
-  for (int i = 0; i < 16; i++) {
-    for (int j = 0; j < 2; j++) {
-      print(i, j, matrix[(i + offset) % 128][j]);
-      
+
+    for (int i = 0; i < 16; i++) {
+      for (int j = 0; j < 2; j++) {
+        if (j == carrinho && i == 0) continue;
+        print(i, j, matrix[(i + offset) % 128][j]);
+
+      }
     }
-  }
 
-  if(checar_perda() == 1) {
-    lcd.setCursor(0,0);
+
+    if (checar_perda() == 1) {
+
+      perdeu = 1;
+      clear_screen();
+    }
+
+    offset = millis() / 500;
+  } else {
+    lcd.setCursor(0, 0);
     lcd.print("SE FUDEU");
-    return;
+    input();
   }
-
-  offset = millis() / 150;
 }

@@ -4,13 +4,13 @@ import serial
 # TODO: saida serial p/o arduino
 
 # Mapeamento de Teclas para comandos que serão enviados p/o Arduino
-key_dict = {"Left": -1, "Right": 1,
-        "a": -1, "d": 1,
-        "space": 0}
+key_dict = {"Left": "l", "Right":'r',
+        "a": 'l', "s": 'r',
+        "space": 's'}
 
 # Nenhum desses valores valem nada. São só placeholders
-port = "/dev/algumacoisa"
-#ard_serial = serial.Serial(port, 9600,timeout=2)
+port = "/dev/ttyACM1"
+ard_serial = serial.Serial(port, 9600,timeout=5)
 
 # Transformar a String da tecla em um comando entendivel pelo Arduino
 def EncodeKey(key):
@@ -22,7 +22,12 @@ def SendData(key):
     if encoded != None:
         print("Sending: {}".format(encoded))
         # TODO: não sei se isso funciona
-        #ard_serial.write(str(encoded))
+        if ard_serial.isOpen():
+            b = bytearray()
+            b.extend(map(ord, encoded))
+            ard_serial.write(b)
+        else:
+            print("Serial não está disponivel :(")
 
 # Função que será chamada quando uma tecla for pressionada
 def OnKeyPress(event):
