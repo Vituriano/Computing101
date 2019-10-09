@@ -4,6 +4,8 @@ void setup() {
 
 void loop() {
   if(Serial.available() > 0) {
-    Serial.println(Serial.read());
+    Serial.println("Recieving smth");
+    Serial.println(Serial.readString());
+    //Serial.println(recv);
   }
 }
