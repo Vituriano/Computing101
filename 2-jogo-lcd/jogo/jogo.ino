@@ -1,7 +1,6 @@
 /*
    ATENÇÂO: Este código é feio e cabeludo, mas ele já sabe disso.
    Um dia vamos arrumar o coitado.
-
 */
 
 #include <LiquidCrystal.h>
@@ -15,6 +14,29 @@
 #define BRIGHT 7
 
 #define min(a,b) ((a<b)?(a):(b))
+
+// NAVES:
+byte fundoInimigo1[8] = {
+  B11000,
+  B10100,
+  B10110,
+  B11111,
+  B10110,
+  B10100,
+  B11000,
+};
+
+byte frenteInimigo1[8] = {
+  B11110,
+  B00001,
+  B00001,
+  B11110,
+  B00001,
+  B00001,
+  B11110,
+};
+
+// CAMINHOES:
 
 byte fundo[8] = {
   B01100,
