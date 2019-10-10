@@ -96,6 +96,16 @@ byte frenteInimigo4[8] = {
   B00000,
 };
 
+byte player[8] = {
+  B10000,
+  B11011,
+  B11100,
+  B11110,
+  B11100,
+  B11011,
+  B10000,
+};
+
 // CAMINHOES:
 
 byte fundo[8] = {
