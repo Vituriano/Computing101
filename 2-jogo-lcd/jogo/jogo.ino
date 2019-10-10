@@ -210,12 +210,12 @@ int past_l = 0, past_r = 0;
 int carrinho = 0;
 
 void l_callback(int l) {
-  Serial.println("PUTONA HAPPYFACE2");
+  //Serial.println("PUTONA HAPPYFACE2");
   carrinho = 0;
 }
 
 void r_callback(int r) {
-  Serial.println("PUTONA HAPPYFACE");
+  //Serial.println("PUTONA HAPPYFACE");
   carrinho = 1;
 }
 
