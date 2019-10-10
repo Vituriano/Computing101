@@ -76,6 +76,26 @@ byte frenteInimigo3[8] = {
   B11110,
 };
 
+byte fundoInimigo4[8] = {
+  B00010,
+  B10111,
+  B11100,
+  B11011,
+  B11100,
+  B10111,
+  B00010,
+};
+
+byte frenteInimigo4[8] = {
+  B00000,
+  B00001,
+  B00010,
+  B11100,
+  B00010,
+  B00001,
+  B00000,
+};
+
 // CAMINHOES:
 
 byte fundo[8] = {
