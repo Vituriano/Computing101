@@ -149,17 +149,7 @@ LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 char matrix[128][2];
 char vazio = ' ';
 
-void setup() {
-
-  Serial.begin(9600);
-  pinMode(BLEFT, INPUT);
-  pinMode(BRIGHT, INPUT);
-
-  lcd.begin(16, 2);
-  lcd.print("Put On a");
-  lcd.setCursor(0, 1);
-  lcd.print("HappyFace :)");
-  delay(2000);
+void gerarMatriz() {
   for (int i = 0; i < 128; i++) {
     for (int j = 0; j < 2; j++) {
       matrix[i][j] = vazio;
@@ -186,6 +176,21 @@ void setup() {
       }
     }
   }
+}
+
+void setup() {
+
+  Serial.begin(9600);
+  pinMode(BLEFT, INPUT);
+  pinMode(BRIGHT, INPUT);
+
+  lcd.begin(16, 2);
+  lcd.print("Put On a");
+  lcd.setCursor(0, 1);
+  lcd.print("HappyFace :)");
+  delay(2000);
+
+  gerarMatriz();
 
   lcd.createChar(UNICO, unico);
   lcd.createChar(FRENTE, frente);
