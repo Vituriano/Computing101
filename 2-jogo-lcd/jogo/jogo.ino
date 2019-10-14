@@ -10,8 +10,6 @@
 #define FRENTE 2
 #define UNICO 3
 
-#define EBEGIN 20
-#define NENEMIES 4
 #define PLAYER 14
 
 #define BLEFT 6
@@ -19,81 +17,6 @@
 
 #define min(a,b) ((a<b)?(a):(b))
 
-// NAVES:
-byte inimigos [][8] = {
-  {
-    B11000,
-    B10100,
-    B10110,
-    B11111,
-    B10110,
-    B10100,
-    B11000,
-  },
-  {
-    B11110,
-    B00001,
-    B00001,
-    B11110,
-    B00001,
-    B00001,
-    B11110,
-  },
-  {
-    B01100,
-    B11010,
-    B10011,
-    B11111,
-    B10011,
-    B11010,
-    B01100,
-  },
-  {
-    B11100,
-    B00010,
-    B00001,
-    B01111,
-    B00001,
-    B00010,
-    B11100,
-  },
-  {
-    B00100,
-    B01010,
-    B11101,
-    B11011,
-    B11101,
-    B01010,
-    B00100,
-  },
-  {
-    B11110,
-    B00010,
-    B00011,
-    B00000,
-    B00011,
-    B00010,
-    B11110,
-  },
-  {
-    B00010,
-    B10111,
-    B11100,
-    B11011,
-    B11100,
-    B10111,
-    B00010,
-  },
-  {
-    B00000,
-    B00001,
-    B00010,
-    B11100,
-    B00010,
-    B00001,
-    B00000,
-  }
-};
 
 byte player[8] = {
   B10000,
@@ -163,12 +86,12 @@ void gerarMatriz() {
       int y = rand() % 2;
       if (rand() % 10) {
         int tamanho = min((rand() % 5) + 2, 128 - i);
-        matrix[i][y] = byte(EBEGIN+1);
+        matrix[i][y] = byte(FRENTE);
         for (int j = i + 1; j < i + tamanho - 1; j++) {
 
           matrix[j][y] = byte(MEIO);
         }
-        matrix[i + tamanho - 1][y] = byte(EBEGIN);
+        matrix[i + tamanho - 1][y] = byte(FUNDO);
         if (tamanho == 1) {
           matrix[i][y] = byte(UNICO);
         }
@@ -198,14 +121,6 @@ void setup() {
   lcd.createChar(FUNDO, fundo);
   lcd.createChar(MEIO, meio);
   lcd.createChar(PLAYER, player);
-
-  for (int i = 0; i < NENEMIES; i++) {
-    //lcd.createChar(EBEGIN+(i*2), inimigos[i*2]);
-    //lcd.createChar(EBEGIN+(i*2) + 1, inimigos[i*2 + 1]);
-  }
-
-  lcd.createChar(EBEGIN, inimigos[3]);
-  lcd.createChar(EBEGIN+1, inimigos[4]);
 
   passado = millis();
 }
@@ -335,7 +250,7 @@ void loop() {
     lcd.setCursor(0, 1);
     lcd.print(":(");
     lcd.setCursor(4, 1);
-    lcd.print(score / 10);
+    lcd.print((score/10)*(score/10)-100);
 
     if (input()) {
       perdeu = 0;
