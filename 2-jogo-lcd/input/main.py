@@ -9,7 +9,7 @@ key_dict = {"Left": "l", "Right":'r',
         "space": 's'}
 
 # Nenhum desses valores valem nada. São só placeholders
-port = "/dev/ttyACM1"
+port = "/dev/ttyACM0"
 ard_serial = serial.Serial(port, 9600)
 
 # Transformar a String da tecla em um comando entendivel pelo Arduino
