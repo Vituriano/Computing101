@@ -10,90 +10,22 @@
 #define FRENTE 2
 #define UNICO 3
 
+#define PLAYER 14
+
 #define BLEFT 6
 #define BRIGHT 7
 
 #define min(a,b) ((a<b)?(a):(b))
 
-// NAVES:
-byte fundoInimigo1[8] = {
-  B11000,
-  B10100,
-  B10110,
-  B11111,
-  B10110,
-  B10100,
-  B11000,
-};
 
-byte frenteInimigo1[8] = {
-  B11110,
-  B00001,
-  B00001,
-  B11110,
-  B00001,
-  B00001,
-  B11110,
-};
-
-byte fundoInimigo2[8] = {
-  B01100,
-  B11010,
-  B10011,
-  B11111,
-  B10011,
-  B11010,
-  B01100,
-};
-
-byte frenteInimigo2[8] = {
-  B11100,
-  B00010,
-  B00001,
-  B01111,
-  B00001,
-  B00010,
-  B11100,
-};
-
-byte fundoInimigo3[8] = {
-  B00100,
-  B01010,
-  B11101,
-  B11011,
-  B11101,
-  B01010,
-  B00100,
-};
-
-byte frenteInimigo3[8] = {
-  B11110,
-  B00010,
-  B00011,
-  B00000,
-  B00011,
-  B00010,
-  B11110,
-};
-
-byte fundoInimigo4[8] = {
-  B00010,
-  B10111,
-  B11100,
+byte player[8] = {
+  B10000,
   B11011,
   B11100,
-  B10111,
-  B00010,
-};
-
-byte frenteInimigo4[8] = {
-  B00000,
-  B00001,
-  B00010,
+  B11110,
   B11100,
-  B00010,
-  B00001,
-  B00000,
+  B11011,
+  B10000,
 };
 
 // CAMINHOES:
@@ -139,24 +71,14 @@ LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 char matrix[128][2];
 char vazio = ' ';
 
-void setup() {
-
-  Serial.begin(9600);
-  pinMode(BLEFT, INPUT);
-  pinMode(BRIGHT, INPUT);
-
-  lcd.begin(16, 2);
-  lcd.print("Put On a");
-  lcd.setCursor(0, 1);
-  lcd.print("HappyFace :)");
-  delay(2000);
+void gerarMatriz() {
   for (int i = 0; i < 128; i++) {
     for (int j = 0; j < 2; j++) {
       matrix[i][j] = vazio;
     }
   }
 
-  for (int i = 20; i < 128; i++) {
+  for (int i = 20; i < 127; i++) {
     if (matrix[i][0] != vazio || matrix[i][1] != vazio ||
         matrix[i - 1][0] != vazio || matrix[i - 1][1] != vazio ||
         matrix[i - 2][0] != vazio || matrix[i - 2][1] != vazio) {
@@ -176,11 +98,31 @@ void setup() {
       }
     }
   }
+}
+
+int passado = 0;
+
+void setup() {
+
+  Serial.begin(9600);
+  pinMode(BLEFT, INPUT);
+  pinMode(BRIGHT, INPUT);
+
+  lcd.begin(16, 2);
+  lcd.print("Put On a");
+  lcd.setCursor(0, 1);
+  lcd.print("HappyFace :)");
+  delay(2000);
+
+  gerarMatriz();
 
   lcd.createChar(UNICO, unico);
   lcd.createChar(FRENTE, frente);
   lcd.createChar(FUNDO, fundo);
   lcd.createChar(MEIO, meio);
+  lcd.createChar(PLAYER, player);
+
+  passado = millis();
 }
 
 int offset = 0;
@@ -195,18 +137,19 @@ int past_l = 0, past_r = 0;
 int carrinho = 0;
 
 void l_callback(int l) {
-  Serial.println("PUTONA HAPPYFACE2");
+  //Serial.println("PUTONA HAPPYFACE2");
   carrinho = 0;
 }
 
 void r_callback(int r) {
-  Serial.println("PUTONA HAPPYFACE");
+  //Serial.println("PUTONA HAPPYFACE");
   carrinho = 1;
 }
 
-void input() {
+int input() {
   int l = digitalRead(BLEFT);
   int r = digitalRead(BRIGHT);
+  int pressed = 0;
 
   String s = "";
   if (Serial.available() > 0) {
@@ -215,30 +158,34 @@ void input() {
 
   if (s == "l") {
     l_callback(1);
+    pressed = 1;
   }
-
 
   if (s == "r") {
     r_callback(1);
+    pressed = 1;
   }
 
   if (l != past_l) {
     if (l == HIGH) {
       l_callback(l);
+      pressed = 1;
     }
 
   }
 
   past_l = l;
 
-
   if (r != past_r) {
     if (r == HIGH) {
       r_callback(r);
+      pressed = 1;
     }
   }
 
   past_r = r;
+
+  return pressed;
 
 }
 
@@ -274,14 +221,10 @@ int perdeu = 0;
 int score = 0;
 void loop() {
   if (!perdeu) {
-
     lcd.setCursor(0, 1);
-
     input();
     //clear_screen();
-
-    print(0, carrinho, UNICO);
-
+    print(0, carrinho, PLAYER);
 
     for (int i = 0; i < 16; i++) {
       for (int j = 0; j < 2; j++) {
@@ -291,23 +234,31 @@ void loop() {
       }
     }
 
-
     if (checar_perda() == 1) {
 
       perdeu = 1;
       clear_screen();
-      score = millis() / 1000;
+      score = offset;
     }
 
-    offset = millis() / 500;
+    offset += (millis() - passado) / 30;
+    score += (millis() - passado);
+    passado = millis();
   } else {
     lcd.setCursor(0, 0);
     lcd.print("Put On a SadFace");
     lcd.setCursor(0, 1);
     lcd.print(":(");
     lcd.setCursor(4, 1);
-    lcd.print(score);
+    lcd.print((score/10)*(score/10)-100);
 
-    input();
+    if (input()) {
+      perdeu = 0;
+      offset = 0;
+      score = 0;
+      srand(millis());
+      gerarMatriz();
+    }
+
   }
 }
