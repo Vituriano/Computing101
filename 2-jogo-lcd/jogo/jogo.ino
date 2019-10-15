@@ -4,7 +4,9 @@
 */
 
 #include <LiquidCrystal.h>
-#define FUNDO 0 #define MEIO 1 #define FRENTE 2
+#define FUNDO 0 
+#define MEIO 1 
+#define FRENTE 2
 #define UNICO 3
 
 #define PLAYER 14
