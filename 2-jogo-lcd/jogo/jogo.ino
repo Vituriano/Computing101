@@ -67,17 +67,22 @@ byte unico[8] = {
   B00001,
 };
 
+//Inicialização do display
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+//Declaração da matriz
 char matrix[128][2];
+
 char vazio = ' ';
 
+//Função que gera a matriz do jogo 
 void gerarMatriz() {
+	//Guarda o char <espaço> em todos os espaços da matriz
   for (int i = 0; i < 128; i++) {
     for (int j = 0; j < 2; j++) {
       matrix[i][j] = vazio;
     }
   }
-
+	//
   for (int i = 20; i < 127; i++) {
     if (matrix[i][0] != vazio || matrix[i][1] != vazio ||
         matrix[i - 1][0] != vazio || matrix[i - 1][1] != vazio ||
@@ -103,24 +108,37 @@ void gerarMatriz() {
 int passado = 0;
 
 void setup() {
-
+	//Inicializações	
   Serial.begin(9600);
   pinMode(BLEFT, INPUT);
   pinMode(BRIGHT, INPUT);
 
+	//Mensagem de boas vindas
   lcd.begin(16, 2);
   lcd.print("Put On a");
   lcd.setCursor(0, 1);
   lcd.print("HappyFace :)");
   delay(2000);
 
+	//Gera a matriz do jogo
   gerarMatriz();
-
+	//Cria os chars baseados nos bytecodes definidos no topo do código
   lcd.createChar(UNICO, unico);
   lcd.createChar(FRENTE, frente);
   lcd.createChar(FUNDO, fundo);
   lcd.createChar(MEIO, meio);
   lcd.createChar(PLAYER, player);
+<<<<<<< HEAD
+=======
+	//
+  for (int i = 0; i < NENEMIES; i++) {
+    //lcd.createChar(EBEGIN+(i*2), inimigos[i*2]);
+    //lcd.createChar(EBEGIN+(i*2) + 1, inimigos[i*2 + 1]);
+  }
+
+  lcd.createChar(EBEGIN, inimigos[3]);
+  lcd.createChar(EBEGIN+1, inimigos[4]);
+>>>>>>> 6471924bf50f90b0a59bc8d831f8a5960cb80988
 
   passado = millis();
 }
