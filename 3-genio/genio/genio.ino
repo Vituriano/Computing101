@@ -1,5 +1,6 @@
 #define RODADAS 19
 #define BTNS 3
+#define RESET 2
 //int jogo[19][3]={0};
 // auto-explicativo
 int buttons[BTNS]={A0, A1, A2},estagio=1,pos=0;
@@ -10,7 +11,7 @@ int pressionado=0;
 
 void gerarJogo(int** mat){
     for(int i=0;i<RODADAS;i++){
-        int led = rand()%3;
+        int led = random(3);
         *(*(mat+i)+led) = 1; 
     }
 }
@@ -111,7 +112,8 @@ void reiniciarJogo(int** jogo){
     }
 
     delay(2000);
-    iniciarJogo(jogo);
+    digitalWrite(RESET, LOW);
+    //iniciarJogo(jogo);
 }
 
 void iniciarJogo(int** jogo){
@@ -134,11 +136,18 @@ void printDebug() {
 int** jogo=NULL;
 
 void setup() {
+
+    randomSeed(analogRead(A4));
+    digitalWrite(RESET, HIGH);
+    delay(200);
+
     Serial.begin(9600);
     for(int i=0;i<BTNS;i++){
         pinMode(buttons[i], INPUT);
         pinMode(leds[i], OUTPUT);
     }
+
+    pinMode(RESET, OUTPUT);
 
     jogo = alocarJogo();
     iniciarJogo(jogo);
@@ -157,9 +166,10 @@ void loop() {
             if(checarJogada(jogo, in)){
                 printDebug();
                 proximaPosicao(jogo);
+                delay(250);
             } else {
                 Serial.println("Errou");
-                //reiniciarJogo(jogo);
+                reiniciarJogo(jogo);
             }
         }
         pressionado=1;
