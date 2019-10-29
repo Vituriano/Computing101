@@ -23,7 +23,7 @@ void gerarJogo(int** mat){
     }
 }
 
-/* void desenharJogo desenha a matriz no serial */
+/* void desenharJogo desenha a matriz no output do serial */
 void desenharJogo(int** mat){
     for(int i=0;i<RODADAS;i++){
         for(int j=0;j<3;j++){
@@ -51,6 +51,7 @@ int** alocarJogo(){
     return mat;
 }
 
+//Libera a memória alocada para a matriz
 void liberarJogo(int** p){
     for(int i=0;i<RODADAS;i++){
         free(*(p+1));
@@ -71,6 +72,7 @@ int lerInput(){
     return mask;
 }
 
+//Checa se a jogada foi certa, não sei como >_<
 int checarJogada(int** mat, int jogada){
     int target=0;
     for(int i=0;i<BTNS;i++){
@@ -81,6 +83,7 @@ int checarJogada(int** mat, int jogada){
     return !(jogada^target);
 }
 
+//Se o número de rodadas acabou, print "ACABOU-SE" ou, se ainda não acabou, pisca os leds de acordo.
 void proximaPosicao(int** jogo){
     if(++pos>=estagio) {
         if(++estagio==RODADAS) Serial.println("ACABOU-se");
@@ -89,12 +92,13 @@ void proximaPosicao(int** jogo){
     }
 }
 
+//para cada estágio (fase) do primeiro até o atual, ler qual dos LED's deve acender e então acender o LED correspondente 
 void printCres(int** jogo){
     for(int i=0;i<estagio;i++){
         for(int j=0;j<BTNS;j++){
-            if(*(*(jogo+i)+j)) {
-                led(j, 1);
-                delay(1000);
+            if(*(*(jogo+i)+j)) {   //se tal posição tiver um 1, 
+                led(j, 1);			
+                delay(1000);	   //mantém o LED ligado por 1segundo e o mantém desligado por 0.5 segundos
                 led(j, 0);
                 delay(500);
 
@@ -103,13 +107,15 @@ void printCres(int** jogo){
     }
 }
 
+//TODO:Desliga todos os LED's? é isso? 
 void printJogo(int** jogo){
     for(int i=0;i<BTNS;i++){
-        //led(i, *(*(jogo+pos)+i));
+        //led(i, *(*(jogo+pos)+i)); <---- o q é isso?
         led(i, 0);
     }
 }
 
+//led(idx,state) liga ou desliga (state == 1 || estate == 0) o LED no index idx do vetor que contém os LED's
 void led(int idx, int state){
     //TODO: implementar
     digitalWrite(leds[idx], state?HIGH:LOW);
@@ -126,20 +132,19 @@ void setup() {
         pinMode(leds[i], OUTPUT);
     }
 
-	//int** jogo aponta para cada linha da matriz
-    jogo = alocarJogo();
+    jogo = alocarJogo();  //faz int** jogo apontar para a primeira linha da matriz
 
-    gerarJogo(jogo);
-    desenharJogo(jogo);
-    printCres(jogo);
+    gerarJogo(jogo); 	  //popula a matriz com um 1 por linha, aleatoriamente entre as 3 colunas
+    desenharJogo(jogo);   //printa a o jogo no serial
+    printCres(jogo);	  //faz com que os LED's pisquem na ordem correta, do primeiro estágio até o atual 
 }
 
 void loop() { 
-    printJogo(jogo);
-    //digitalWrite(9, HIGH);
+    printJogo(jogo);	//TODO: desliga todos os LED's?
+    //digitalWrite(9, HIGH); //TODO: pra que isso?
     int in = lerInput();
-    if(in){
-        Serial.println(in);
+    if(in){						//TODO: se botões tiverem sido apertados, printa os botões apertados,
+        Serial.println(in);     //      checa se a jogada foi correta e passa para o próximo estágio?
         if(checarJogada(jogo, in)){
             proximaPosicao(jogo);
         }
